@@ -6,9 +6,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties
+@ConfigurationProperties()
 @Getter
 @Setter
 public class ApplicationProperties {
     private String token;
+
+    private Server server;
+
+    @Getter
+    @Setter
+    public static class Server {
+        private String id;
+
+        private String statusChannelId;
+
+        private String voiceChannelId;
+    }
 }

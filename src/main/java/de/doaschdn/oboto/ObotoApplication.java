@@ -9,17 +9,22 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
 @SpringBootApplication
 public class ObotoApplication implements CommandLineRunner {
+    private static final Logger log = LoggerFactory.getLogger(ObotoApplication.class);
+
     private ApplicationProperties applicationProperties;
 
     private Reflections reflections;
@@ -42,11 +47,21 @@ public class ObotoApplication implements CommandLineRunner {
 
         commands.forEach(method -> {
             try {
-                CommandExecutor commandExecutor = (CommandExecutor) method.getDeclaringClass().newInstance();
-                cmdHandler.registerCommand(commandExecutor);
+                CommandExecutor commandExecutor;
+
+                if (CommandExecutor.class.isAssignableFrom(method.getDeclaringClass())) {
+                    commandExecutor = (CommandExecutor) method
+                            .getDeclaringClass()
+                            .getConstructor(ApplicationProperties.class)
+                            .newInstance(applicationProperties);
+
+                    cmdHandler.registerCommand(commandExecutor);
+                } else {
+                    log.warn("Class '{}' containing command '{}' is no CommandExecutor, ignoring.", method.getDeclaringClass().getCanonicalName(), method.getName());
+                }
             }
-            catch (InstantiationException | IllegalAccessException e) {
-                System.err.println("Cannot instantiate command.");
+            catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                log.warn("Cannot register Command: {}", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         });
