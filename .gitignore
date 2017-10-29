@@ -26,4 +26,4 @@ nbdist/
 mvnw
 mvnw.cmd
 
-application.properties
+application.yml

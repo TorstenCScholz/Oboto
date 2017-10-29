@@ -1,0 +1,5 @@
+token: YOUR DISCORD BOT TOKEN -> https://discordapp.com/developers/applications/me
+server:
+    id: YOUR GUILD SERVER ID
+    statusChannelId: YOUR STATUS CHANNEL ID
+    voiceChannelId: YOUR VOICE CHANNEL ID
