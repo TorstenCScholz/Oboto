@@ -30,42 +30,42 @@ public class VoiceChannelEventListener implements EventListener {
     @Override
     public void onEvent(final Event event) {
         final JDA jda = event.getJDA();
-        TextChannel statusChannel = jda.getTextChannelById(applicationProperties.getServer().getStatusChannelId());
+        final TextChannel statusChannel = jda.getTextChannelById(applicationProperties.getServer().getStatusChannelId());
 
         log.info("Event: {}", event.getClass().getCanonicalName());
 
         if (event instanceof GuildVoiceJoinEvent) {
-            GuildVoiceJoinEvent guildVoiceJoinEvent = (GuildVoiceJoinEvent) event;
+            final GuildVoiceJoinEvent guildVoiceJoinEvent = (GuildVoiceJoinEvent) event;
 
-            Member member = guildVoiceJoinEvent.getMember();
-            Channel channelJoined = guildVoiceJoinEvent.getChannelJoined();
+            final Member member = guildVoiceJoinEvent.getMember();
+            final Channel channelJoined = guildVoiceJoinEvent.getChannelJoined();
 
             log.info("User {} joined voice channel {}", member.getEffectiveName(), channelJoined.getName());
 
-            String timeJoined = DATE_FORMAT.format(new Date());
+            final String timeJoined = DATE_FORMAT.format(new Date());
 
             statusChannel.sendMessage(String.format("[%s] **%s** joined :sound:**%s**.", timeJoined, member.getEffectiveName(), channelJoined.getName())).queue();
         } else if (event instanceof GuildVoiceLeaveEvent) {
-            GuildVoiceLeaveEvent guildVoiceLeaveEvent = (GuildVoiceLeaveEvent) event;
+            final GuildVoiceLeaveEvent guildVoiceLeaveEvent = (GuildVoiceLeaveEvent) event;
 
-            Member member = guildVoiceLeaveEvent.getMember();
-            Channel channelLeft = guildVoiceLeaveEvent.getChannelLeft();
+            final Member member = guildVoiceLeaveEvent.getMember();
+            final Channel channelLeft = guildVoiceLeaveEvent.getChannelLeft();
 
             log.info("User {} left voice channel {}", member.getEffectiveName(), channelLeft.getName());
 
-            String timeLeft = DATE_FORMAT.format(new Date());
+            final String timeLeft = DATE_FORMAT.format(new Date());
 
             statusChannel.sendMessage(String.format("[%s] **%s** left :sound:**%s**.", timeLeft, member.getEffectiveName(), channelLeft.getName())).queue();
         } else if (event instanceof GuildVoiceMoveEvent) {
-            GuildVoiceMoveEvent guildVoiceMoveEvent = (GuildVoiceMoveEvent) event;
+            final GuildVoiceMoveEvent guildVoiceMoveEvent = (GuildVoiceMoveEvent) event;
 
-            Member member = guildVoiceMoveEvent.getMember();
-            Channel channelJoined = guildVoiceMoveEvent.getChannelJoined();
-            Channel channelLeft = guildVoiceMoveEvent.getChannelLeft();
+            final Member member = guildVoiceMoveEvent.getMember();
+            final Channel channelJoined = guildVoiceMoveEvent.getChannelJoined();
+            final Channel channelLeft = guildVoiceMoveEvent.getChannelLeft();
 
             log.info("User {} was moved from voice channel {} to {}", member.getEffectiveName(), channelLeft.getName(), channelJoined.getName());
 
-            String timeLeft = DATE_FORMAT.format(new Date());
+            final String timeLeft = DATE_FORMAT.format(new Date());
 
             statusChannel.sendMessage(String.format("[%s] **%s** was moved from :sound:%s to :sound:**%s**.", timeLeft, member.getEffectiveName(), channelLeft.getName(), channelJoined.getName())).queue();
         }
