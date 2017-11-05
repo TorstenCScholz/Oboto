@@ -71,7 +71,8 @@ public class ObotoApplication implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(applicationProperties.getToken())
-                .addEventListener(new DiscordEventListener(applicationProperties))
+                .addEventListener(new DiscordListenerAdapter(applicationProperties))
+                .addEventListener(new VoiceChannelEventListener(applicationProperties))
                 .buildBlocking();
 
         registerCommands(jda);

@@ -10,9 +10,9 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@AllArgsConstructor()
-public class DiscordEventListener extends ListenerAdapter {
-    private final static Logger log = LoggerFactory.getLogger(DiscordEventListener.class);
+@AllArgsConstructor
+public class DiscordListenerAdapter extends ListenerAdapter {
+    private final static Logger log = LoggerFactory.getLogger(DiscordListenerAdapter.class);
 
     private ApplicationProperties applicationProperties;
 
