@@ -29,10 +29,15 @@ public class ObotoApplication implements CommandLineRunner {
 
     private Reflections reflections;
 
+    private VoiceChannelService voiceChannelService;
+
     @Inject
-    public ObotoApplication(ApplicationProperties applicationProperties, Reflections reflections) {
+    public ObotoApplication(ApplicationProperties applicationProperties,
+                            Reflections reflections,
+                            VoiceChannelService voiceChannelService) {
         this.applicationProperties = applicationProperties;
         this.reflections = reflections;
+        this.voiceChannelService = voiceChannelService;
     }
 
 	public static void main(String[] args) throws InterruptedException, LoginException, RateLimitedException {
@@ -72,7 +77,7 @@ public class ObotoApplication implements CommandLineRunner {
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(applicationProperties.getToken())
                 .addEventListener(new DiscordListenerAdapter(applicationProperties))
-                .addEventListener(new VoiceChannelEventListener(applicationProperties))
+                .addEventListener(new VoiceChannelEventListener(applicationProperties, voiceChannelService))
                 .buildBlocking();
 
         registerCommands(jda);

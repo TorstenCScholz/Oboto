@@ -1,14 +1,5 @@
 package de.doaschdn.oboto;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lombok.AllArgsConstructor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -42,46 +33,6 @@ public class DiscordListenerAdapter extends ListenerAdapter {
                     if (!guild.getAudioManager().isConnected()) {
                         guild.getAudioManager().openAudioConnection(voiceChannel);
                     }
-
-                    AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-                    playerManager.registerSourceManager(new LocalAudioSourceManager());
-
-                    AudioSourceManagers.registerRemoteSources(playerManager);
-                    AudioPlayer player = playerManager.createPlayer();
-//                    TrackScheduler trackScheduler = new TrackScheduler(player);
-//                    player.addListener(trackScheduler);
-
-                    guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
-
-                    log.info("YOLO {}", System.getProperty("user.dir"));
-
-                    playerManager.loadItem("1.mp3", new AudioLoadResultHandler() {
-                        @Override
-                        public void trackLoaded(AudioTrack track) {
-//                            trackScheduler.queue(track);
-                            player.playTrack(track);
-                            log.info("Playing yo.");
-                        }
-
-                        @Override
-                        public void playlistLoaded(AudioPlaylist playlist) {
-                            for (AudioTrack track : playlist.getTracks()) {
-//                                trackScheduler.queue(track);
-                            }
-                        }
-
-                        @Override
-                        public void noMatches() {
-                            log.info("Rip, not found.");
-                            // Notify the user that we've got nothing
-                        }
-
-                        @Override
-                        public void loadFailed(FriendlyException throwable) {
-                            log.info("Rip, loading failed.");
-                            // Notify the user that everything exploded
-                        }
-                    });
                 }
                 catch (PermissionException e) {
                     log.error("Cannot play audio.");
