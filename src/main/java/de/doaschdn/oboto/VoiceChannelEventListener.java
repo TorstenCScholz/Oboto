@@ -3,6 +3,7 @@ package de.doaschdn.oboto;
 import lombok.AllArgsConstructor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.Event;
@@ -47,7 +48,8 @@ public class VoiceChannelEventListener implements EventListener {
             "hello/Widowmaker - Bonjour.mp3",
             "hello/Winston - Hi There.mp3",
             "hello/Zarya - Privjet.mp3",
-            "hello/Zenyatta - Greetings.mp3"
+            "hello/Zenyatta - Greetings.mp3",
+            "hello/Doomfist - Hello there.ogg"
     };
 
     final static String[] byeSoundFilenames = new String[] {
@@ -72,6 +74,11 @@ public class VoiceChannelEventListener implements EventListener {
 
             final Member member = guildVoiceJoinEvent.getMember();
             final Channel channelJoined = guildVoiceJoinEvent.getChannelJoined();
+            final Guild guild = guildVoiceJoinEvent.getGuild();
+
+            if (!guild.getId().equals(applicationProperties.getServer().getId())) {
+                return;
+            }
 
             log.info("User {} joined voice channel {}", member.getEffectiveName(), channelJoined.getName());
 
@@ -85,6 +92,11 @@ public class VoiceChannelEventListener implements EventListener {
 
             final Member member = guildVoiceLeaveEvent.getMember();
             final Channel channelLeft = guildVoiceLeaveEvent.getChannelLeft();
+            final Guild guild = guildVoiceLeaveEvent.getGuild();
+
+            if (!guild.getId().equals(applicationProperties.getServer().getId())) {
+                return;
+            }
 
             log.info("User {} left voice channel {}", member.getEffectiveName(), channelLeft.getName());
 
@@ -99,7 +111,13 @@ public class VoiceChannelEventListener implements EventListener {
             final Member member = guildVoiceMoveEvent.getMember();
             final Channel channelJoined = guildVoiceMoveEvent.getChannelJoined();
             final Channel channelLeft = guildVoiceMoveEvent.getChannelLeft();
+            final Guild guild = guildVoiceMoveEvent.getGuild();
 
+            if (!guild.getId().equals(applicationProperties.getServer().getId())) {
+                return;
+            }
+
+            // TODO: Event occurs even if the user themselves moved to another channel
             log.info("User {} was moved from voice channel {} to {}", member.getEffectiveName(), channelLeft.getName(), channelJoined.getName());
 
             final String timeLeft = DATE_FORMAT.format(new Date());
