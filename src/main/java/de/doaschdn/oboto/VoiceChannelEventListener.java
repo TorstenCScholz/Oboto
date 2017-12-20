@@ -118,12 +118,11 @@ public class VoiceChannelEventListener implements EventListener {
                 return;
             }
 
-            // TODO: Event occurs even if the user themselves moved to another channel
-            log.info("User {} was moved from voice channel {} to {}", member.getEffectiveName(), channelLeft.getName(), channelJoined.getName());
+            log.info("User {} left voice channel {} and joined voice channel {}.", member.getEffectiveName(), channelLeft.getName(), channelJoined.getName());
 
             final String timeLeft = DATE_FORMAT.format(new Date());
 
-            statusChannel.sendMessage(String.format("[%s] **%s** was moved from :sound:%s to :sound:**%s**.", timeLeft, member.getEffectiveName(), channelLeft.getName(), channelJoined.getName())).queue();
+            statusChannel.sendMessage(String.format("[%s] **%s** left :sound:%s and joined :sound:**%s**.", timeLeft, member.getEffectiveName(), channelLeft.getName(), channelJoined.getName())).queue();
 
             // Check if moved user was the bot itself. If so, rejoin.
             if (((GuildVoiceMoveEvent) event).getMember().getUser().getId().equals(jda.getSelfUser().getId())) {
