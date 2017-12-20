@@ -68,6 +68,7 @@ public class VoiceChannelEventListener implements EventListener {
         log.info("Event: {}", event.getClass().getCanonicalName());
 
         if (event instanceof ReadyEvent) {
+            voiceChannelService.leaveVoice(applicationProperties, jda);
             voiceChannelService.joinVoice(applicationProperties, jda);
         } else if (event instanceof GuildVoiceJoinEvent) {
             final GuildVoiceJoinEvent guildVoiceJoinEvent = (GuildVoiceJoinEvent) event;
@@ -86,7 +87,7 @@ public class VoiceChannelEventListener implements EventListener {
 
             statusChannel.sendMessage(String.format("[%s] **%s** joined :sound:**%s**.", timeJoined, member.getEffectiveName(), channelJoined.getName())).queue();
 
-            voiceChannelService.playSound(((GuildVoiceJoinEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(helloSoundFilenames));
+            voiceChannelService.playSound(((GuildVoiceJoinEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(helloSoundFilenames), guild);
         } else if (event instanceof GuildVoiceLeaveEvent) {
             final GuildVoiceLeaveEvent guildVoiceLeaveEvent = (GuildVoiceLeaveEvent) event;
 
@@ -104,7 +105,7 @@ public class VoiceChannelEventListener implements EventListener {
 
             statusChannel.sendMessage(String.format("[%s] **%s** left :sound:**%s**.", timeLeft, member.getEffectiveName(), channelLeft.getName())).queue();
 
-            voiceChannelService.playSound(((GuildVoiceLeaveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(byeSoundFilenames));
+            voiceChannelService.playSound(((GuildVoiceLeaveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(byeSoundFilenames), guild);
         } else if (event instanceof GuildVoiceMoveEvent) {
             final GuildVoiceMoveEvent guildVoiceMoveEvent = (GuildVoiceMoveEvent) event;
 
@@ -130,9 +131,9 @@ public class VoiceChannelEventListener implements EventListener {
                 voiceChannelService.joinVoice(applicationProperties, jda);
             } else {
                 if (channelJoined.getId().equals(applicationProperties.getServer().getVoiceChannelId())) {
-                    voiceChannelService.playSound(((GuildVoiceMoveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(helloSoundFilenames));
+                    voiceChannelService.playSound(((GuildVoiceMoveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(helloSoundFilenames), guild);
                 } else if (channelLeft.getId().equals(applicationProperties.getServer().getVoiceChannelId())) {
-                    voiceChannelService.playSound(((GuildVoiceMoveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(byeSoundFilenames));
+                    voiceChannelService.playSound(((GuildVoiceMoveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(byeSoundFilenames), guild);
                 }
             }
         }
