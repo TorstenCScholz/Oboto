@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
@@ -32,7 +33,7 @@ public class VoiceChannelEventListener implements EventListener {
 
     private VoiceChannelService voiceChannelService;
 
-    // TODO
+    // TODO config file or load by filename from hd?
     final static String[] helloSoundFilenames = new String[] {
             "hello/D.VA - Kor 1.mp3",
             "hello/Genji - Hello.mp3",
@@ -64,6 +65,7 @@ public class VoiceChannelEventListener implements EventListener {
     public void onEvent(final Event event) {
         final JDA jda = event.getJDA();
         final TextChannel statusChannel = jda.getTextChannelById(applicationProperties.getServer().getStatusChannelId());
+        final VoiceChannel voiceChannel = jda.getVoiceChannelById(applicationProperties.getServer().getVoiceChannelId());
 
         log.info("Event: {}", event.getClass().getCanonicalName());
 
@@ -87,7 +89,9 @@ public class VoiceChannelEventListener implements EventListener {
 
             statusChannel.sendMessage(String.format("[%s] **%s** joined :sound:**%s**.", timeJoined, member.getEffectiveName(), channelJoined.getName())).queue();
 
-            voiceChannelService.playSound(((GuildVoiceJoinEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(helloSoundFilenames), guild);
+            if (voiceChannel.equals(channelJoined)) {
+                voiceChannelService.playSound(((GuildVoiceJoinEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(helloSoundFilenames), guild);
+            }
         } else if (event instanceof GuildVoiceLeaveEvent) {
             final GuildVoiceLeaveEvent guildVoiceLeaveEvent = (GuildVoiceLeaveEvent) event;
 
@@ -105,7 +109,9 @@ public class VoiceChannelEventListener implements EventListener {
 
             statusChannel.sendMessage(String.format("[%s] **%s** left :sound:**%s**.", timeLeft, member.getEffectiveName(), channelLeft.getName())).queue();
 
-            voiceChannelService.playSound(((GuildVoiceLeaveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(byeSoundFilenames), guild);
+            if (voiceChannel.equals(channelLeft)) {
+                voiceChannelService.playSound(((GuildVoiceLeaveEvent) event).getGuild().getAudioManager(), getRandomArrayEntry(byeSoundFilenames), guild);
+            }
         } else if (event instanceof GuildVoiceMoveEvent) {
             final GuildVoiceMoveEvent guildVoiceMoveEvent = (GuildVoiceMoveEvent) event;
 
